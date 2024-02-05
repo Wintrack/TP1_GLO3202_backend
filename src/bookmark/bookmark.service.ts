@@ -1,7 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { createBookMarkDto } from './dto/createBookMark.dto';
 import { User } from '@prisma/client';
+import { updateBookMarkDto, createBookMarkDto } from './dto';
 
 @Injectable({})
 export class BookmarkService {
@@ -16,14 +20,65 @@ export class BookmarkService {
     });
     return bookmark;
   }
-  async updateBookmark(user: User) {}
-  async deleteBookmarkById(user: User) {}
+  async updateBookmark(user: User, updateDto: updateBookMarkDto) {
+    const bookmark = await this.prisma.bookmark.findUnique({
+      where: {
+        id: updateDto.id,
+      },
+    });
+
+    if (!bookmark || bookmark.userId != user.id) {
+      throw new ForbiddenException('Access to ressource denied');
+    }
+
+    return await this.prisma.bookmark.update({
+      where: {
+        id: bookmark.id,
+      },
+      data: {
+        ...updateDto,
+      },
+    });
+  }
+
+  async deleteBookmarkById(user: User, bookMarkId: string) {
+    const bookmark = await this.prisma.bookmark.findUnique({
+      where: {
+        id: bookMarkId,
+      },
+    });
+
+    if (!bookmark || bookmark.userId != user.id) {
+      throw new ForbiddenException('Access to ressource denied');
+    }
+    await this.prisma.bookmark.delete({
+      where: {
+        id: bookMarkId,
+      },
+    });
+  }
+
   async getBookmarks(user: User) {
-    return this.prisma.bookmark.findMany({
+    const bookmark = await this.prisma.bookmark.findMany({
       where: {
         userId: user.id,
       },
     });
+    if (!bookmark) {
+      throw new NotFoundException('Ressource not found');
+    }
+    return bookmark;
   }
-  async getBookmarkById(user: User) {}
+
+  async getBookmarkById(user: User, bookMarkId: string) {
+    const bookmark = await this.prisma.bookmark.findFirst({
+      where: {
+        id: bookMarkId,
+      },
+    });
+    if (!bookmark) {
+      throw new NotFoundException('Ressource not found');
+    }
+    return bookmark;
+  }
 }
