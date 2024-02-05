@@ -16,14 +16,14 @@ export class BookmarkService {
     });
     return bookmark;
   }
-  async updateBookmark(userId: string) {}
-  async deleteBookmarkById(userId: string) {}
-  async getBookmarks(userId: string) {
+  async updateBookmark(user: User) {}
+  async deleteBookmarkById(user: User) {}
+  async getBookmarks(user: User) {
     return this.prisma.bookmark.findMany({
       where: {
-        userId,
+        userId: user.id,
       },
     });
   }
-  async getBookmarkById(userId: string) {}
+  async getBookmarkById(user: User) {}
 }
