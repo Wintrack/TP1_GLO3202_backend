@@ -5,13 +5,13 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from '@prisma/client';
-import { updateBookMarkDto, createBookMarkDto } from './dto';
+import { UpdateBookMarkDto, CreateBookMarkDto } from './dto';
 
 @Injectable({})
 export class BookmarkService {
   constructor(private prisma: PrismaService) {}
 
-  async createBookmark(user: User, createDto: createBookMarkDto) {
+  async createBookmark(user: User, createDto: CreateBookMarkDto) {
     const bookmark = await this.prisma.bookmark.create({
       data: {
         userId: user.id,
@@ -20,7 +20,7 @@ export class BookmarkService {
     });
     return bookmark;
   }
-  async updateBookmark(user: User, updateDto: updateBookMarkDto) {
+  async updateBookmark(user: User, updateDto: UpdateBookMarkDto) {
     const bookmark = await this.prisma.bookmark.findUnique({
       where: {
         id: updateDto.id,
