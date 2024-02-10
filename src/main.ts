@@ -5,12 +5,13 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const port: number = 3000;
+  const port: number = 5000;
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
     }),
   );
+  app.enableCors();
   const config = new DocumentBuilder()
     .setTitle('API bookmark')
     .setDescription('The cats API description')
