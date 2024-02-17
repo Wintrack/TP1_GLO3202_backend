@@ -10,9 +10,9 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { JwtGuard } from 'src/auth/guard';
+import { JwtGuard } from '../auth/guard';
 import { BookmarkService } from './bookmark.service';
-import { GetUser } from 'src/auth/decorator';
+import { GetUser } from '../auth/decorator';
 import { User } from '@prisma/client';
 import { UpdateBookMarkDto, CreateBookMarkDto } from './dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
